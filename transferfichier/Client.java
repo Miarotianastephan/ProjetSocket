@@ -84,7 +84,6 @@ public class Client extends JFrame{
         // Here we send the File to Server
         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeLong(file.length());
-        // Here we  break file into chunks
         byte[] buffer = new byte[4 * 1024];
         while ( (bytes = fileInputStream.read(buffer)) != -1 ) 
         {
@@ -132,8 +131,7 @@ public class Client extends JFrame{
 
         btnSend = new JButton("Send");
         btnSend.setName("Send");
-        btnSend.setBounds(40,10,150,50);
-        // btnSend.setBorder(new EmptyBorder(8, 8, 8, 8));   
+        btnSend.setBounds(40,10,150,50);  
         btnSend.setFont(new Font(("Arial"),Font.BOLD, 20));
         btnSend.setBackground(new Color(4, 205, 151));
 
@@ -141,7 +139,6 @@ public class Client extends JFrame{
         btnChoice.setName("Choice");
         btnChoice.setBounds(220,10,150,50);
         btnChoice.setFont(new Font(("Arial"),Font.BOLD, 20));
-        // btnChoice.setBorder(new EmptyBorder(8, 8, 8, 8));
         btnChoice.setBackground(new Color(255, 161, 90));
 
         jpBtn.add(btnSend);
