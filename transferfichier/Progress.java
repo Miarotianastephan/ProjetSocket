@@ -27,7 +27,7 @@ public class Progress  extends Thread{
         }
         try {
             //Envoie du fichier vers serveur
-            client.sendFile(server, pr, client.getPath());    
+            client.sendFile(client.getPath());    
         } catch (Exception e) {
             
         }

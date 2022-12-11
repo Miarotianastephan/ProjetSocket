@@ -18,7 +18,7 @@ public class MyAction implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e){
         try {
-        if( ((JButton)(e.getSource())).getName() == "Choice" ){
+        if( ((JButton)(e.getSource())).getName() == "Choose" ){
             JFileChooser jfChooser = new JFileChooser();
             jfChooser.setDialogTitle("Choose your file to transfer!");
 
@@ -36,7 +36,7 @@ public class MyAction implements ActionListener{
             if(client.getPath() == null){
                 client.setLabelFileSelected("Aucun element choisis");
             }else{
-                Progress pr = new Progress(client,"localhost", 1234);
+                Progress pr = new Progress(client);
                 pr.start();
             }
 

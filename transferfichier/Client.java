@@ -3,15 +3,16 @@ package client;
 import java.net.Socket;
 import java.io.*;
 import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.net.UnknownHostException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.Font;
 import java.awt.Dimension;
-import javafx.event.ActionEvent;
 import java.awt.event.ActionListener;
 import action.*;
+import data.Data;
 
 public class Client extends JFrame{
     Socket socket = null;
@@ -61,6 +62,8 @@ public class Client extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
+        setServerName(serverHostName);
+        setPort(port);
         initLabel();
         initPushButton();
         setVisible(true);
@@ -68,35 +71,35 @@ public class Client extends JFrame{
         btnChoice.addActionListener(new MyAction(this));
     }
     
-    // sendFile function define here
-    public void sendFile(String serverHostName,int port,String path)throws Exception
+    //FONCTION SEND
+    public void sendFile(String path)throws Exception
     {
+        String serverHostName=getServerName();
+        int port=getPortNumber();
         this.socket = new Socket(serverHostName, port);
         System.out.println("Connected to the server...");
         int bytes = 0;
-        // Open the File where he located in My PC
+        //Selection file on my PC
         File file = new File(path);
-        FileInputStream fileInputStream =null;
-        if(file.isFile()){//if the path is a file 
-            fileInputStream = new FileInputStream(file);
+        FileInputStream input =null;
+
+        if(file.isFile()){//if only a file 
+            input = new FileInputStream(file);
         }else{throw (new Exception("Not file found"));}
  
-        // Here we send the File to Server
-        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataOutputStream.writeLong(file.length());
-        byte[] buffer = new byte[4 * 1024];
-        while ( (bytes = fileInputStream.read(buffer)) != -1 ) 
-        {
-            // Send the file to Server Socket 
-            System.out.println("Bytes- "+bytes);
-            dataOutputStream.write(buffer, 0, bytes);
-            dataOutputStream.flush();
-
-        }
-        // close the file here
-        fileInputStream.close();
-        dataOutputStream.close();
+        //Sending file object DATA
+        byte b[] = new byte[input.available()];
+        int sizeOfByte = input.read(b);
+        ObjectOutputStream sortie = new ObjectOutputStream(socket.getOutputStream());
+        Data packData = new Data();
+        packData.setNameData(file.getName());
+        packData.setExtension(getExtension(file.getAbsolutePath()));
+        packData.setData(b);
+        sortie.writeObject(packData);
+        sortie.flush();
     }
+    
+
 
     public void initLabel(){
         jpInfoFichier = new JPanel();
@@ -131,14 +134,16 @@ public class Client extends JFrame{
 
         btnSend = new JButton("Send");
         btnSend.setName("Send");
-        btnSend.setBounds(40,10,150,50);  
+        btnSend.setBounds(40,10,150,50);
+        // btnSend.setBorder(new EmptyBorder(8, 8, 8, 8));   
         btnSend.setFont(new Font(("Arial"),Font.BOLD, 20));
         btnSend.setBackground(new Color(4, 205, 151));
 
-        btnChoice = new JButton("Choice");
-        btnChoice.setName("Choice");
+        btnChoice = new JButton("Choose");
+        btnChoice.setName("Choose");
         btnChoice.setBounds(220,10,150,50);
         btnChoice.setFont(new Font(("Arial"),Font.BOLD, 20));
+        // btnChoice.setBorder(new EmptyBorder(8, 8, 8, 8));
         btnChoice.setBackground(new Color(255, 161, 90));
 
         jpBtn.add(btnSend);
